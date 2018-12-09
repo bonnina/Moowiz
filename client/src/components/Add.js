@@ -11,7 +11,7 @@ export default class Add extends React.Component {
       this.state = {
         actorIds: []
       }
-
+      
       this.handleInputChange = this.handleInputChange.bind(this);
       this.sanitize = this.sanitize.bind(this);
     }
@@ -29,6 +29,7 @@ export default class Add extends React.Component {
     }
 
     addMovie(e) {
+      e.preventDefault();
       if (!e.target.checkValidity()) {
         return;
       }
@@ -40,10 +41,10 @@ export default class Add extends React.Component {
         "stars":  this.state.actorIds  
        };
       
-      function createOrUpdate(m) {
+      const createOrUpdate = (m) => {
         let myHeaders = new Headers();
         myHeaders.append('Content-Type', 'application/json');
-  
+
         fetch(`${BACKEND_URL}/movies`, {
           method: m,
           headers: myHeaders,
@@ -52,7 +53,8 @@ export default class Add extends React.Component {
         .then(response => response.json())
         .then(j => {
           console.log(j.movieId);
-          this.props.getMovies(); 
+          this.props.getMovies();
+          this.props.history.push('/');
         })
         .catch(error => console.log(error.message));
       }
@@ -60,7 +62,7 @@ export default class Add extends React.Component {
       let title = e.target.elements.title.value;
       let myHeaders = new Headers();
       myHeaders.append('Content-Type', 'application/json');
-      let url = `http://localhost:3000/movies/${title}`;
+      let url = `${BACKEND_URL}/movies/${title}`;
       
       // check if the movie already exists
       fetch(url)
